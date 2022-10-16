@@ -1,6 +1,8 @@
 #!/usr/bin/env php
 <?php
 /**
+
+
  * Yii console bootstrap file.
  *
  * @link http://www.yiiframework.com/
