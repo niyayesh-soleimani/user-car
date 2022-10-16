@@ -69,22 +69,31 @@ class CarController extends Controller
         }
         return $this->render('carForm',['model'=>$model , 'userDropDown'=>$userDropDown]);
     }
-    public function actionUpdate($id)
-    {
-        $model = Car::findOne(['id' => $id]);
-            if ($model->load(Yii::$app->request->post())) {
-                if ($model->save()) {
-                    return $this->redirect(['car']);
-                }
+     public function actionUpdate($id)
+     {
+        $userDropDown=[];
+        $users = User::find()->all();
+        foreach ($users as $user) {
+            $userDropDown[$user->id] = $user->name;
+        }
+        $model = new Car();
+                 $model = Car::findOne(['id' => $id]);
+        if ($model->load(Yii::$app->request->post())) {
+            if($model->save()){
+                    $searchModel=new CarSearch();
+                    return $this->render('carList', [
+                        'dataProvider' => $searchModel->search(Yii::$app ->request ->queryParams),
+                        'searchModel' => $searchModel
+                ]);   
             }
-        return $this->render('UpdateBtn', ['model' => $model]);
+        }
+        return $this->render('UpdateBtn',['model'=>$model , 'userDropDown'=>$userDropDown]);
     }
     public function actionDelete($id)
     {
         $model = Car::findOne(['id' => $id]) -> delete();
         return $this -> redirect(['car']);
     }
-
     public function actionCar()
     {
         $searchModel = new CarSearch();
